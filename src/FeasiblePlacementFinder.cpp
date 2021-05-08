@@ -12,8 +12,8 @@ std::optional<std::vector<RectId>> topological_order(const int num_rect,
   // indices in the topological order
   struct NodeInfo {
     bool reached = false;
-    int current_child = 0;
-    int topological_index;
+    RectId current_child = 0;
+    RectId topological_index;
   };
 
   std::vector<NodeInfo> node_info(num_rect);
