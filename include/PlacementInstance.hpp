@@ -24,7 +24,7 @@ public:
   // Reads a placement instance from the given filename
   PlacementInstance(const std::string filename);
 
-  std::size_t num_rect() const { return _rectangles.size(); }
+  RectId num_rect() const { return _rectangles.size(); }
   Length width(const RectId rect) const { return _rectangles.at(rect).width; }
   Length height(const RectId rect) const { return _rectangles.at(rect).height; }
   const Rectangle &chip_image() const { return _image; }
