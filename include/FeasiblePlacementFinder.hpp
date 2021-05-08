@@ -4,6 +4,7 @@
 #include "PlacementInstance.hpp"
 #include <optional>
 
+#ifdef __cpp_concepts
 template <typename F>
 concept EdgeBetweenFunct = requires(F f, RectId a, RectId b) {
   { f(a, b) }
@@ -14,6 +15,10 @@ template <typename F> concept LengthInDimFunct = requires(F f, RectId a) {
   { f(a) }
   ->std::convertible_to<Length>;
 };
+#else
+#define EdgeBetweenFunct typename
+#define LengthInDimFunct typename
+#endif
 
 class FeasiblePlacementFinder {
 public:
