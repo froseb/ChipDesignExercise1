@@ -7,7 +7,7 @@
 // the topological order
 template <EdgeBetweenFunct EBF>
 std::optional<std::vector<RectId>> topological_order(const int num_rect,
-                                                     EBF edge_between) {
+                                                     const EBF edge_between) {
   // store the time in the DFS when all children have been iterated through ->
   // indices in the topological order
   struct NodeInfo {
@@ -66,8 +66,8 @@ std::optional<std::vector<RectId>> topological_order(const int num_rect,
 // length_in_dim
 template <EdgeBetweenFunct EBF, LengthInDimFunct LF>
 std::optional<std::vector<Length>>
-find_feasible_potential(const int num_rect, EBF edge_between, LF length_in_dim,
-                        const Length max_length) {
+find_feasible_potential(const RectId num_rect, const EBF edge_between,
+                        const LF length_in_dim, const Length max_length) {
   const auto top_order = topological_order(num_rect, edge_between);
   if (not top_order) {
     return std::nullopt;
@@ -94,7 +94,7 @@ find_feasible_potential(const int num_rect, EBF edge_between, LF length_in_dim,
 }
 
 std::optional<std::vector<std::pair<Length, Length>>>
-FeasiblePlacementFinder::find_feasible_placement() {
+FeasiblePlacementFinder::find_feasible_placement() const {
   std::vector<RectId> south_or_west_perm(_placement_instance.num_rect());
   std::vector<RectId> north_or_west_perm(_placement_instance.num_rect());
   for (RectId i = 0; i < _placement_instance.num_rect(); ++i) {
@@ -117,15 +117,6 @@ FeasiblePlacementFinder::find_feasible_placement() {
         return south_or_west_perm[a] < south_or_west_perm[b] and
                north_or_west_perm[a] > north_or_west_perm[b];
       };
-
-      // Check if each pair of rectangles has a relation
-      for (RectId i = 0; i < _placement_instance.num_rect(); ++i) {
-        for (RectId j = 0; j < _placement_instance.num_rect(); ++j) {
-          if (not(west(i, j) or west(j, i) or south(i, j) or south(j, i))) {
-            continue;
-          }
-        }
-      }
 
       // Compute feasible potential in x direction
       auto x_pot = find_feasible_potential(

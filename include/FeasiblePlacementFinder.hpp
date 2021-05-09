@@ -26,7 +26,7 @@ public:
       : _placement_instance(placement_instance) {}
 
   std::optional<std::vector<std::pair<Length, Length>>>
-  find_feasible_placement();
+  find_feasible_placement() const;
 
 private:
   const PlacementInstance &_placement_instance;
