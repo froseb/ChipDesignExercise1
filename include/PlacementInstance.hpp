@@ -20,7 +20,6 @@ inline void error(std::string msg) {
 }
 
 class PlacementInstance {
-
 public:
   // Reads a placement instance from the given filename
   PlacementInstance(const std::string filename);
