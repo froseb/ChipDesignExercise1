@@ -1,12 +1,12 @@
 #include "FeasiblePlacementFinder.hpp"
-#include <functional>
-#include <iostream>
+#include <algorithm>
 
+namespace FeasiblePlacementFinder {
 // Computes a vector that contains a topological order of the rectangles, i.e. a
 // rectangle r1 being before another rectangle r2 means that r1 is "above" r2 in
 // the topological order
 template <EdgeBetweenFunct EBF>
-std::optional<std::vector<RectId>> topological_order(const int num_rect,
+std::optional<std::vector<RectId>> topological_order(const RectId num_rect,
                                                      const EBF edge_between) {
   // store the time in the DFS when all children have been iterated through ->
   // indices in the topological order
@@ -17,7 +17,7 @@ std::optional<std::vector<RectId>> topological_order(const int num_rect,
   };
 
   std::vector<NodeInfo> node_info(num_rect);
-  int cur_top_idx = 0;
+  RectId cur_top_idx = 0;
 
   for (RectId root = 0; root < num_rect; ++root) {
     if (node_info[root].reached) {
@@ -94,10 +94,10 @@ find_feasible_potential(const RectId num_rect, const EBF edge_between,
 }
 
 std::optional<std::vector<std::pair<Length, Length>>>
-FeasiblePlacementFinder::find_feasible_placement() const {
-  std::vector<RectId> south_or_west_perm(_placement_instance.num_rect());
-  std::vector<RectId> north_or_west_perm(_placement_instance.num_rect());
-  for (RectId i = 0; i < _placement_instance.num_rect(); ++i) {
+find_feasible_placement(const PlacementInstance &placement_instance) {
+  std::vector<RectId> south_or_west_perm(placement_instance.num_rect());
+  std::vector<RectId> north_or_west_perm(placement_instance.num_rect());
+  for (RectId i = 0; i < placement_instance.num_rect(); ++i) {
     south_or_west_perm[i] = i;
     north_or_west_perm[i] = i;
   }
@@ -120,18 +120,18 @@ FeasiblePlacementFinder::find_feasible_placement() const {
 
       // Compute feasible potential in x direction
       auto x_pot = find_feasible_potential(
-          _placement_instance.num_rect(), west,
-          [&](RectId a) { return _placement_instance.width(a); },
-          _placement_instance.chip_image().width);
+          placement_instance.num_rect(), west,
+          [&](RectId a) { return placement_instance.width(a); },
+          placement_instance.chip_image().width);
       if (not x_pot) {
         continue;
       }
 
       // Compute feasible potential in y direction
       auto y_pot = find_feasible_potential(
-          _placement_instance.num_rect(), south,
-          [&](RectId a) { return _placement_instance.height(a); },
-          _placement_instance.chip_image().height);
+          placement_instance.num_rect(), south,
+          [&](RectId a) { return placement_instance.height(a); },
+          placement_instance.chip_image().height);
       if (not y_pot) {
         continue;
       }
@@ -149,9 +149,9 @@ FeasiblePlacementFinder::find_feasible_placement() const {
   // Combine the potentials in x and y direction to a placement
   if (res_x_pot) {
     std::vector<std::pair<Length, Length>> result;
-    result.reserve(_placement_instance.num_rect());
+    result.reserve(placement_instance.num_rect());
 
-    for (RectId i = 0; i < _placement_instance.num_rect(); ++i) {
+    for (RectId i = 0; i < placement_instance.num_rect(); ++i) {
       result.push_back({res_x_pot->at(i), res_y_pot->at(i)});
     }
     return result;
@@ -159,3 +159,4 @@ FeasiblePlacementFinder::find_feasible_placement() const {
 
   return std::nullopt;
 }
+} // namespace FeasiblePlacementFinder

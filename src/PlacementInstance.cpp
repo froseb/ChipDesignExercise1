@@ -3,6 +3,7 @@
 #include <iostream>
 #include <optional>
 
+namespace FeasiblePlacementFinder {
 PlacementInstance::PlacementInstance(const std::string filename) {
   FILE *file = std::fopen(filename.c_str(), "r");
 
@@ -72,3 +73,4 @@ bool PlacementInstance::check(
   }
   return true;
 }
+} // namespace FeasiblePlacementFinder

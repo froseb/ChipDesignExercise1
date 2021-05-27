@@ -1,7 +1,8 @@
 #include "FeasiblePlacementFinder.hpp"
-#include "PlacementInstance.hpp"
 #include <cassert>
 #include <iostream>
+
+using namespace FeasiblePlacementFinder;
 
 int main(int argc, char *args[]) {
   if (argc != 2) {
@@ -9,8 +10,7 @@ int main(int argc, char *args[]) {
         "Please provide exactly one input file as a parameter"));
   }
   PlacementInstance inst{args[1]};
-  FeasiblePlacementFinder finder{inst};
-  auto placement = finder.find_feasible_placement();
+  auto placement = find_feasible_placement(inst);
   if (placement) {
     for (auto pos : *placement) {
       std::cout << pos.first << " " << pos.second << std::endl;

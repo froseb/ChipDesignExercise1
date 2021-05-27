@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+namespace FeasiblePlacementFinder {
 using Length = int;
 using RectId = int;
 
@@ -37,4 +38,5 @@ private:
   Rectangle _image;
   std::vector<Rectangle> _rectangles;
 };
+} // namespace FeasiblePlacementFinder
 #endif
